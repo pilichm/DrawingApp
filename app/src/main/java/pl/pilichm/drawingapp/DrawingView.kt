@@ -16,6 +16,7 @@ class DrawingView(context: Context, attributes: AttributeSet) : View(context, at
     private var mColor = Color.BLACK
     private var mCanvas: Canvas? = null
     private var mPaths = ArrayList<CustomPath>()
+    private var mUndoPaths = ArrayList<CustomPath>()
 
     init {
         setupDrawing()
@@ -91,6 +92,13 @@ class DrawingView(context: Context, attributes: AttributeSet) : View(context, at
     fun setColor(newColor: String){
         mColor = Color.parseColor(newColor)
         mDrawPaint!!.color = mColor
+    }
+
+    fun removeLastPath(){
+        if (!mPaths.isNullOrEmpty()){
+            mPaths.removeLast()
+            invalidate()
+        }
     }
 
     internal inner class CustomPath(var color: Int, var brushThickness: Float): Path() {
