@@ -73,8 +73,8 @@ class DrawingView(context: Context, attributes: AttributeSet) : View(context, at
                     mDrawPath!!.lineTo(x, y)
             }
             MotionEvent.ACTION_UP -> {
-                mDrawPath = CustomPath(mColor, mBrushSize)
                 mPaths.add(mDrawPath!!)
+                mDrawPath = CustomPath(mColor, mBrushSize)
             }
             else -> return false
         }
