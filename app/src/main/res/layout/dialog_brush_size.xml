@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="image_small"
-                android:src="@drawablandroid:layout_gravity="center"e/small"/>
+                android:src="@drawable/small"/>
 
             <ImageButton
                 android:id="@+id/ib_medium_brush"
