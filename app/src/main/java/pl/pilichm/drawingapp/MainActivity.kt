@@ -14,15 +14,19 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.get
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_brush_size.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -40,10 +44,21 @@ class MainActivity : AppCompatActivity() {
         mImageButtonCurrentPaint!!.setImageDrawable(
             ContextCompat.getDrawable(this, R.drawable.pallet_selected))
 
+        setBrushSizeButton()
+        setGalleryButton()
+        setRedoUndoButtons()
+        setSaveButton()
+        setRandomColor()
+    }
+
+
+    private fun setBrushSizeButton(){
         ib_brush.setOnClickListener{
             showBrushSizeChooserDialog()
         }
+    }
 
+    private fun setGalleryButton(){
         ib_gallery.setOnClickListener {
             if (isStorageAllowed()) {
                 val pickPhoto = Intent(
@@ -55,7 +70,9 @@ class MainActivity : AppCompatActivity() {
                 requestStoragePermission()
             }
         }
+    }
 
+    private fun setRedoUndoButtons(){
         ib_undo.setOnClickListener {
             drawing_view.modifyPaths(true)
         }
@@ -63,7 +80,9 @@ class MainActivity : AppCompatActivity() {
         ib_redo.setOnClickListener {
             drawing_view.modifyPaths(false)
         }
+    }
 
+    private fun setSaveButton(){
         ib_save.setOnClickListener {
             if (isStorageAllowed()){
                 val builder = AlertDialog.Builder(this)
@@ -75,13 +94,13 @@ class MainActivity : AppCompatActivity() {
                 builder.setView(textInput)
 
                 builder.setPositiveButton("Ok"){
-                    _, _ ->
+                        _, _ ->
                     BitmapAsyncTask(getBitmapFromView(fl_drawing_view_container),
                         textInput.text.toString()).execute()
                 }
 
                 builder.setNegativeButton("Cancel"){
-                    dialog, _ -> dialog.cancel()
+                        dialog, _ -> dialog.cancel()
                 }
 
                 builder.show()
@@ -89,6 +108,12 @@ class MainActivity : AppCompatActivity() {
                 requestStoragePermission()
             }
         }
+    }
+
+    private fun setRandomColor(){
+        ib_color_random.background = Color.rgb(
+            (1..255).random(), (1..255).random(), (1..255).random()
+        ).toDrawable()
     }
 
     private fun showBrushSizeChooserDialog(){
@@ -99,6 +124,7 @@ class MainActivity : AppCompatActivity() {
         val smallBrush = brushDialog.findViewById<ImageButton>(R.id.ib_small_brush)
         val mediumBrush = brushDialog.findViewById<ImageButton>(R.id.ib_medium_brush)
         val largeBrush = brushDialog.findViewById<ImageButton>(R.id.ib_large_brush)
+        val sbBrushSize = brushDialog.findViewById<SeekBar>(R.id.sb_brush_size)
 
         smallBrush.setOnClickListener{
             drawing_view.setSizeForBrush(10.toFloat())
@@ -114,6 +140,17 @@ class MainActivity : AppCompatActivity() {
             drawing_view.setSizeForBrush(30.toFloat())
             brushDialog.dismiss()
         }
+
+        sbBrushSize.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {}
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seek: SeekBar) {
+                drawing_view.setSizeForBrush(seek.progress.toFloat())
+            }
+        })
 
         brushDialog.show()
     }

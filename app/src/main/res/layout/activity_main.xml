@@ -115,6 +115,7 @@
             android:contentDescription="color_pallet"/>
 
         <ImageButton
+            android:id="@+id/ib_color_random"
             android:tag="@color/random"
             android:onClick="paintClicked"
             android:layout_margin="2dp"

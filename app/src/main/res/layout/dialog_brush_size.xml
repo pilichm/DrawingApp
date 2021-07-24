@@ -6,37 +6,53 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <ImageButton
-        android:id="@+id/ib_small_brush"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="image_small"
+    <LinearLayout
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/ib_medium_brush"
-        android:src="@drawable/small"/>
-
-    <ImageButton
-        android:id="@+id/ib_medium_brush"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="image_medium"
-        app:layout_constraintTop_toBottomOf="@id/ib_small_brush"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/ib_large_brush"
-        android:src="@drawable/medium"/>
-
-    <ImageButton
-        android:id="@+id/ib_large_brush"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="image_medium"
-        app:layout_constraintTop_toBottomOf="@id/ib_medium_brush"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:src="@drawable/large"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/ib_small_brush"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="image_small"
+                android:src="@drawablandroid:layout_gravity="center"e/small"/>
+
+            <ImageButton
+                android:id="@+id/ib_medium_brush"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="image_medium"
+                android:src="@drawable/medium"/>
+
+            <ImageButton
+                android:id="@+id/ib_large_brush"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="image_medium"
+                android:src="@drawable/large"/>
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/sb_brush_size"
+            android:rotation="270"
+            android:min="1"
+            android:max="30"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
