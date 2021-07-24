@@ -2,7 +2,9 @@ package pl.pilichm.drawingapp
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,7 +14,9 @@ import android.media.MediaScannerConnection
 import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.InputType
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -59,7 +63,25 @@ class MainActivity : AppCompatActivity() {
 
         ib_save.setOnClickListener {
             if (isStorageAllowed()){
-                BitmapAsyncTask(getBitmapFromView(fl_drawing_view_container)).execute()
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Choose filename")
+
+                val textInput = EditText(this)
+                textInput.setText("DrawingApp_${System.currentTimeMillis()/1000}")
+                textInput.inputType = InputType.TYPE_CLASS_TEXT
+                builder.setView(textInput)
+
+                builder.setPositiveButton("Ok"){
+                    _, _ ->
+                    BitmapAsyncTask(getBitmapFromView(fl_drawing_view_container),
+                        textInput.text.toString()).execute()
+                }
+
+                builder.setNegativeButton("Cancel"){
+                    dialog, _ -> dialog.cancel()
+                }
+
+                builder.show()
             } else {
                 requestStoragePermission()
             }
@@ -176,7 +198,7 @@ class MainActivity : AppCompatActivity() {
         return  returnedBitmap
     }
 
-    private inner class BitmapAsyncTask(val bitmap: Bitmap):
+    private inner class BitmapAsyncTask(val bitmap: Bitmap, val fileName: String):
         AsyncTask<Any, Void, String>(){
 
         private lateinit var mProgressBar: Dialog
@@ -193,7 +215,7 @@ class MainActivity : AppCompatActivity() {
                     val bytes = ByteArrayOutputStream()
                     bitmap.compress(Bitmap.CompressFormat.PNG, 90, bytes)
                     val file = File(externalCacheDir!!.absoluteFile.toString()
-                            + File.separator + "DrawingApp_" + System.currentTimeMillis()/1000 + ".png")
+                            + File.separator + fileName + ".png")
                     val fos = FileOutputStream(file)
                     fos.write(bytes.toByteArray())
                     fos.close()
@@ -210,12 +232,12 @@ class MainActivity : AppCompatActivity() {
             super.onPostExecute(result)
             cancelProgressDialog()
             if (!result.isNullOrEmpty()){
-                Toast.makeText(this@MainActivity, "File saved $result", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "File saved $result", Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(this@MainActivity, "Error saving file", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "Error saving file", Toast.LENGTH_LONG).show()
             }
             MediaScannerConnection.scanFile(this@MainActivity, arrayOf(result), null){
-                path, uri -> val shareIntent = Intent()
+                    _, uri -> val shareIntent = Intent()
                 shareIntent.action = Intent.ACTION_SEND
                 shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
                 shareIntent.type = "image/png"
