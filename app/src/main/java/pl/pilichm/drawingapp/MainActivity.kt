@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -58,7 +57,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         ib_undo.setOnClickListener {
-            drawing_view.removeLastPath()
+            drawing_view.modifyPaths(true)
+        }
+
+        ib_redo.setOnClickListener {
+            drawing_view.modifyPaths(false)
         }
 
         ib_save.setOnClickListener {
