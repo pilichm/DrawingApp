@@ -14,7 +14,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.InputType
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
@@ -25,22 +24,24 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.get
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_brush_size.*
+//import kotlinx.android.synthetic.main.dialog_brush_size.*
+import pl.pilichm.drawingapp.databinding.ActivityMainBinding
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     private var mImageButtonCurrentPaint: ImageButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        drawing_view.setSizeForBrush(20.toFloat())
+        binding.drawingView.setSizeForBrush(20.toFloat())
 
-        mImageButtonCurrentPaint = ll_paint_colors[1] as ImageButton
+        mImageButtonCurrentPaint = binding.llPaintColors[1] as ImageButton
         mImageButtonCurrentPaint!!.setImageDrawable(
             ContextCompat.getDrawable(this, R.drawable.pallet_selected))
 
@@ -53,13 +54,13 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setBrushSizeButton(){
-        ib_brush.setOnClickListener{
+        binding.ibBrush.setOnClickListener{
             showBrushSizeChooserDialog()
         }
     }
 
     private fun setGalleryButton(){
-        ib_gallery.setOnClickListener {
+        binding.ibGallery.setOnClickListener {
             if (isStorageAllowed()) {
                 val pickPhoto = Intent(
                     Intent.ACTION_PICK,
@@ -73,17 +74,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setRedoUndoButtons(){
-        ib_undo.setOnClickListener {
-            drawing_view.modifyPaths(true)
+        binding.ibUndo.setOnClickListener {
+            binding.drawingView.modifyPaths(true)
         }
 
-        ib_redo.setOnClickListener {
-            drawing_view.modifyPaths(false)
+        binding.ibRedo.setOnClickListener {
+            binding.drawingView.modifyPaths(false)
         }
     }
 
     private fun setSaveButton(){
-        ib_save.setOnClickListener {
+        binding.ibSave.setOnClickListener {
             if (isStorageAllowed()){
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Choose filename")
@@ -95,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 
                 builder.setPositiveButton("Ok"){
                         _, _ ->
-                    BitmapAsyncTask(getBitmapFromView(fl_drawing_view_container),
+                    BitmapAsyncTask(getBitmapFromView(binding.flDrawingViewContainer),
                         textInput.text.toString()).execute()
                 }
 
@@ -111,7 +112,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setRandomColor(){
-        ib_color_random.background = Color.rgb(
+        binding.ibColorRandom.background = Color.rgb(
             (1..255).random(), (1..255).random(), (1..255).random()
         ).toDrawable()
     }
@@ -127,17 +128,17 @@ class MainActivity : AppCompatActivity() {
         val sbBrushSize = brushDialog.findViewById<SeekBar>(R.id.sb_brush_size)
 
         smallBrush.setOnClickListener{
-            drawing_view.setSizeForBrush(10.toFloat())
+            binding.drawingView.setSizeForBrush(10.toFloat())
             brushDialog.dismiss()
         }
 
         mediumBrush.setOnClickListener{
-            drawing_view.setSizeForBrush(20.toFloat())
+            binding.drawingView.setSizeForBrush(20.toFloat())
             brushDialog.dismiss()
         }
 
         largeBrush.setOnClickListener{
-            drawing_view.setSizeForBrush(30.toFloat())
+            binding.drawingView.setSizeForBrush(30.toFloat())
             brushDialog.dismiss()
         }
 
@@ -148,7 +149,7 @@ class MainActivity : AppCompatActivity() {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
             override fun onStopTrackingTouch(seek: SeekBar) {
-                drawing_view.setSizeForBrush(seek.progress.toFloat())
+                binding.drawingView.setSizeForBrush(seek.progress.toFloat())
             }
         })
 
@@ -159,7 +160,7 @@ class MainActivity : AppCompatActivity() {
         if (view != mImageButtonCurrentPaint){
             val imageButton = view as ImageButton
             val colorTag = imageButton.tag.toString()
-            drawing_view.setColor(colorTag)
+            binding.drawingView.setColor(colorTag)
             imageButton.setImageDrawable(
                 ContextCompat.getDrawable(this, R.drawable.pallet_selected))
             mImageButtonCurrentPaint!!.setImageDrawable(
@@ -212,8 +213,8 @@ class MainActivity : AppCompatActivity() {
             if (requestCode== GALLERY){
                 try {
                     if (data!!.data!=null){
-                        iv_background.visibility = View.VISIBLE
-                        iv_background.setImageURI(data.data)
+                        binding.ivBackground.visibility = View.VISIBLE
+                        binding.ivBackground.setImageURI(data.data)
                     } else {
                         Toast.makeText(this,
                             "Something wrong with the image", Toast.LENGTH_SHORT).show()
