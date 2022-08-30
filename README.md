@@ -10,7 +10,8 @@ User can:
 Used technologies:
 - kotlin,
 - storage permissions,
-- seek bar.
+- seek bar,
+- finding views from layout with view binding.
 
 Initial app screen           |  Brush size screen
 :-------------------------:|:-------------------------:
